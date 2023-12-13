@@ -1,9 +1,12 @@
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.samra.rickandmorty.R
 import com.samra.rickandmorty.data.network.model.Result
 import com.samra.rickandmorty.databinding.ItemCharacterBinding
 
@@ -29,10 +32,18 @@ class CharacterAdapter(private val listener: OnCharacterClickListener) :
                 .into(binding.characterImage)
             binding.nameText.text = character.name
             binding.speciesText.text = character.species
+            when(character.gender){
+                "Female"-> binding.characterGender.setImageResource(R.drawable.ic_female)
+                "Male"-> binding.characterGender.setImageResource(R.drawable.ic_male)
+                "Genderless"-> binding.characterGender.setImageResource(R.drawable.ic_genderless)
+                "Unknown"-> binding.characterGender.setImageResource(R.drawable.ic_undefined)
+            }
+
 
            binding.root.setOnClickListener {
-               listener.onClickCharacter(character)
+               listener.onClickCharacter(character , binding.characterImage)
            }
+            binding.characterImage.transitionName = character.name
         }
     }
 
@@ -50,5 +61,5 @@ class CharacterAdapter(private val listener: OnCharacterClickListener) :
 }
 
 interface OnCharacterClickListener{
-    fun onClickCharacter(item: Result)
+    fun onClickCharacter(item: Result , image: ImageView)
 }

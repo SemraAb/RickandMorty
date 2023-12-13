@@ -8,11 +8,13 @@ import androidx.paging.cachedIn
 import com.samra.rickandmorty.data.network.model.Result
 import com.samra.rickandmorty.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,6 +39,19 @@ class CharacterViewModel @Inject constructor(private val characterRepository: Ch
     fun updateName(value: String) {
         _filterState.update {
             it.copy(name = value)
+        }
+    }
+
+    fun updateFilterState(
+        name: String? = _filterState.value.name,
+        gender: GenderType = _filterState.value.gender,
+        status: StatusType = _filterState.value.status,
+        species: SpeciesType = _filterState.value.species
+    ){
+        _filterState.update {
+            it.copy(
+                name = name ?: "", gender = gender, status = status, species = species
+            )
         }
     }
     fun updateGender(value: GenderType) {

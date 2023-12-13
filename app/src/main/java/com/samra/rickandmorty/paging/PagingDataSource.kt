@@ -23,17 +23,23 @@ class PagingDataSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
         return try {
             val nextPageNumber = params.key ?: 1
-            val response = characterApi.getAll(page = nextPageNumber , name , gender , status , species).body()
-            println(nextPageNumber)
-
-            if (response != null) {
+            val response = characterApi.getAll(page = nextPageNumber , name , gender , status , species)
+            val data = response.body()
+            println(data)
+            if (data !=null) {
                 LoadResult.Page(
-                    data = response.results ?: emptyList(),
+                    data = data.results ?: emptyList(),
                     prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                    nextKey = if (response.results.isNullOrEmpty()) null else nextPageNumber + 1
+                    nextKey = if (data.results.isNullOrEmpty()) null else nextPageNumber + 1
                 )
             } else {
-                LoadResult.Error(Exception("Empty response"))
+                if (response.code() == 404) LoadResult.Page(
+                    data = emptyList(),
+                    prevKey = null,
+                    nextKey = null
+                ) else{
+                    LoadResult.Error(Exception("Empty response"))
+                }
             }
         } catch (e: IOException) {
             LoadResult.Error(e)

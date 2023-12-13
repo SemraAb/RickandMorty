@@ -3,15 +3,20 @@ package com.samra.rickandmorty.ui
 import CharacterAdapter
 import OnCharacterClickListener
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
+import androidx.core.view.doOnPreDraw
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.samra.rickandmorty.adapter.FilterAdapter
 import com.samra.rickandmorty.adapter.OnFilterClick
@@ -47,9 +52,19 @@ class MainFragment : Fragment() {
     }
     private val characterAdapter by lazy {
         CharacterAdapter(object : OnCharacterClickListener {
-            override fun onClickCharacter(item: Result) {
-                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(item)
-                findNavController().navigate(action)
+            override fun onClickCharacter(item: Result , image : ImageView) {
+
+                val extras = FragmentNavigatorExtras(
+                    image to item.image!!
+                )
+                findNavController().navigate(
+                    MainFragmentDirections.actionMainFragmentToDetailFragment(item) , extras
+                )
+
+                postponeEnterTransition()
+                binding.itemsRecyclerView.doOnPreDraw {
+                    startPostponedEnterTransition()
+                }
             }
         })
     }
@@ -71,21 +86,24 @@ class MainFragment : Fragment() {
 
         observeCharacterData()
 
-        binding.searchEditText.setOnEditorActionListener { textView, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val searchText: String = textView.text.toString().trim()
-                characterViewModel.updateName(searchText)
-                true
-            } else {
-                false
+        binding.searchEditText.doOnTextChanged { text, _, _, _ ->
+            lifecycleScope.launch {
+                delay(500)
+                characterViewModel.updateName(text.toString())
             }
+
         }
+
+        val animation =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = animation
+
     }
     private fun observeCharacterData() {
             lifecycleScope.launch {
                 characterViewModel.characterPagingData
                     .flowWithLifecycle(lifecycle).collectLatest {
-                        characterAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                        characterAdapter.submitData(it)
                     }
             }
 

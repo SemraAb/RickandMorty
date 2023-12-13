@@ -1,6 +1,7 @@
 package com.samra.rickandmorty.ui
 
 import android.os.Bundle
+import android.transition.TransitionInflater
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.samra.rickandmorty.data.network.model.Result
 import com.samra.rickandmorty.databinding.FragmentDetailBinding
 import com.samra.rickandmorty.databinding.FragmentMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
@@ -45,5 +47,12 @@ class DetailFragment : Fragment() {
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
         }
+
+
+        binding.itemImage.transitionName=args.result.image
+        val animation =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = animation
+        postponeEnterTransition(200, TimeUnit.MILLISECONDS)
     }
 }
