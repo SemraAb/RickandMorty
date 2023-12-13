@@ -41,7 +41,7 @@ android {
 dependencies {
     implementation 'com.google.mlkit:common:18.10.0'
     def nav_version = "2.7.5"
-    def paging_version = "3.1.1"
+    def paging_version = "3.2.1"
 
 
 
@@ -60,7 +60,7 @@ dependencies {
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     // coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
@@ -79,7 +79,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-
+    // okhttp
+    implementation "com.squareup.okhttp3:okhttp:4.9.1"
 
     // paging 3
     implementation "androidx.paging:paging-runtime:$paging_version"

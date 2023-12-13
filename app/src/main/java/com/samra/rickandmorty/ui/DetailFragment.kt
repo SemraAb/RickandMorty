@@ -31,7 +31,6 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val receivedItem: Result = args.result
 
         binding.itemGender.text = receivedItem.gender
@@ -42,7 +41,6 @@ class DetailFragment : Fragment() {
         Glide.with(binding.root)
             .load(receivedItem.image)
             .into(binding.itemImage)
-
 
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()

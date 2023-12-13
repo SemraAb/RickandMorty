@@ -11,7 +11,9 @@ interface CharacterApi {
     suspend fun getAll(
         @Query("page")page:Int,
         @Query("name")name : String = "",
+        @Query("gender") gender: String = "",
         @Query("status") status: String = "",
-        @Query("gender") gender: String = ""
+        @Query("species") species: String = ""
+
     ): Response<Characters>
 }
